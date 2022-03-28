@@ -2,6 +2,12 @@ import React, { Component } from 'react'
 import EquationBox from './EquationBox'
 import CurrentValue from './CurrentValue'
 
+// You will need to implement the following:
+
+// AC (Clear) button (clear the state)
+// 4 main operators + - / * (store operator in state)
+// 0-9 buttons (store numerical value in state)
+
 
 const operators = ['+', '-', '*', '/', '%']
 
@@ -11,8 +17,11 @@ class Calculator extends Component {
         super()
 
         this.state = {
-            value : '',
-            equation: ''
+            operator: '',
+            number1: '',
+            number2: '',
+            equation: '',
+            value : ''
         }
         
     }
@@ -23,45 +32,56 @@ class Calculator extends Component {
         })
     }
 
-    splitEquation = (equation) => {
-        // empty array that will hold the equation with elements being either numbers or operators
-        const equationSplitByOperator = [] 
-        // empty placeholder to add chars to a number
-        let tempNumber = '' 
-         // split the array so we can iterate and run conditionals on each char
-        const equationArray = equation.split('')
-        equationArray.forEach((val, index, array) => {
-            // if the char is an operator add the tempNumber and the operator to the equationSplitByOperator Array
-            if (operators.includes(val)){
-                let number = parseInt(tempNumber)
-                equationSplitByOperator.push(number)
-                equationSplitByOperator.push(val)
-                tempNumber = [] // reset tempArray to accept the next number
-            }
-            //check to see if it is the end of the array to add the last number in the equation
-            else if(index === array.length - 1){
-                tempNumber += val
-                let number = parseInt(tempNumber)
-                equationSplitByOperator.push(number)
-            }
-            // if the char is not an operator or end of array add it to the temp number
-            else {
-                tempNumber += val
-            }      
-        });
-        return equationSplitByOperator
-    }
-
-    calculate = (equation) => {   
-        const equationSplitByOperator  = this.splitEquation(equation)  
-        const value = eval(equationSplitByOperator.join(' '))
+    updateValue = (state) => {
+        let value = ''
+        console.log('OPERATOR: ', state.operator)
+        switch(state.operator){
+            case '+':
+                value = this.state.number1 + this.state.number2
+                break;
+            case '-':
+                value = this.state.number1 - this.state.number2
+                break;
+            case '*':
+                value = this.state.number1 * this.state.number2
+                break;
+            case '/':
+                value = this.state.number1 / this.state.number2
+                break;
+            case '%':
+                value = this.state.number1 % this.state.number2
+                break;
+            default:
+                console.log('we do not accept that operator')
+        }
+        console.log('VALUE: ', value)
         this.setState({
             value: value
         })
-
     }
+ 
+    calculate = (equation) => {   
+        const equationArray = equation.split('')
+        equationArray.forEach((val, index, array) => {
+
+            // if the char is an operator add the tempNumber and the operator to the equationSplitByOperator Array
+            if (operators.includes(val)){
+                this.setState(
+                    {
+                        operator: val,
+                        number1: parseInt(array.slice(0,index).join('')),
+                        number2: parseInt(array.slice(index+1).join(''))
+                    }, () => {
+                        this.updateValue(this.state)
+                    }         
+                )
+            }
+        })
+    }
+    
 
 render(){
+
     return (
         <div className="container">
             <h1>React Calculator</h1>
