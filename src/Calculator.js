@@ -32,6 +32,16 @@ class Calculator extends Component {
         })
     }
 
+    clear = () =>{
+        this.setState({
+            operator: '',
+            number1: '',
+            number2: '',
+            equation: '',
+            value : ''
+        })
+    }
+
     updateValue = (state) => {
         let value = ''
         console.log('OPERATOR: ', state.operator)
@@ -89,7 +99,7 @@ render(){
                 <CurrentValue value = {this.state.value}/>
                 <EquationBox equation = {this.state.equation}/>
                 <div className="calc-row">
-                    <button className="calc-button calc-button-top" >AC</button>
+                    <button className="calc-button calc-button-top" onClick={this.clear} >AC</button>
                     <button className="calc-button calc-button-top" >+/-</button>
                     <button className="calc-button calc-button-top" onClick={()=>this.addChar('%')}>%</button>
                     <button className="calc-button calc-button-op" onClick={()=>this.addChar('/')}>/</button>
